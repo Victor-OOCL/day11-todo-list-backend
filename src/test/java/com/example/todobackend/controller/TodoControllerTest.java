@@ -79,4 +79,15 @@ public class TodoControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.done").value(false));
     }
 
+    @Test
+    void should_return_delete_todo_when_delete_given_id() throws Exception {
+        // Given
+        Todo deleteTodo = todoRepository.findAll().get(0);
+        // When
+        final var result = client.perform(MockMvcRequestBuilders.delete("/todos/" + deleteTodo.getId())).andReturn();
+        // Then
+        assertThat(todoRepository.findAll()).hasSize(2);
+        assertThat(todoRepository.findAll()).doesNotContain(deleteTodo);
+    }
+
 }
