@@ -15,7 +15,9 @@ import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
+
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
@@ -37,12 +39,12 @@ public class TodoControllerTest {
     private JacksonTester<List<Todo>> todoListJacksonTester;
 
     @BeforeEach
-    void setUp(){
+    void setUp() {
         todoRepository.deleteAll();
         todoRepository.flush();
-        todoRepository.save(new Todo("123",false));
-        todoRepository.save(new Todo("12",true));
-        todoRepository.save(new Todo("1",false));
+        todoRepository.save(new Todo("123", false));
+        todoRepository.save(new Todo("12", true));
+        todoRepository.save(new Todo("1", false));
     }
 
     @Test
@@ -98,7 +100,7 @@ public class TodoControllerTest {
         // Given
         var idToUpdate = todoRepository.findAll().get(0).getId();
         var textToUpdate = "1234";
-        String requestBody = String.format("{\"text\": \"%s\",\"done\":\"%b\" }", textToUpdate,true);
+        String requestBody = String.format("{\"text\": \"%s\",\"done\":\"%b\" }", textToUpdate, true);
         // When
         // Then
         client.perform(MockMvcRequestBuilders.put("/todos/" + idToUpdate)
@@ -114,9 +116,9 @@ public class TodoControllerTest {
     @Test
     void should_throw_error_when_update_given_not_exist_id() throws Exception {
         // Given
-        var idToUpdate = todoRepository.findAll().get(2).getId()+1;
+        var idToUpdate = todoRepository.findAll().get(2).getId() + 1;
         var textToUpdate = "1234";
-        String requestBody = String.format("{\"text\": \"%s\",\"done\":\"%b\" }", textToUpdate,true);
+        String requestBody = String.format("{\"text\": \"%s\",\"done\":\"%b\" }", textToUpdate, true);
         // When
         // Then
         client.perform(MockMvcRequestBuilders.put("/todos/" + idToUpdate)

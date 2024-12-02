@@ -17,23 +17,23 @@ public class TodoController {
     }
 
     @GetMapping
-    public List<Todo> getAllTodo(){
+    public List<Todo> getAllTodo() {
         return todoService.findAll();
     }
 
     @PutMapping("{id}")
-    public Todo updateTodo(@PathVariable Integer id,@RequestBody Todo todo){
-        return todoService.updateTodo(id,todo);
+    public Todo updateTodo(@PathVariable Integer id, @RequestBody Todo todo) {
+        return todoService.updateTodo(id, todo);
     }
 
     @PostMapping
     @ResponseStatus(code = HttpStatus.CREATED)
-    public Todo addTodo(@RequestBody Todo todo){
+    public Todo addTodo(@RequestBody Todo todo) {
         return todoService.addTodo(todo);
     }
 
     @DeleteMapping("{id}")
-    public Todo deleteTodo(@PathVariable Integer id){
+    public Todo deleteTodo(@PathVariable Integer id) {
         return todoService.deleteTodo(id);
     }
 }

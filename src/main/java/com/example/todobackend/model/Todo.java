@@ -13,7 +13,8 @@ public class Todo {
     private String text;
     private boolean done;
 
-    public Todo() {}
+    public Todo() {
+    }
 
     public Todo(Integer id, String text, boolean done) {
         this.id = id;

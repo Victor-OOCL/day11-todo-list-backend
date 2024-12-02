@@ -22,9 +22,9 @@ public class TodoService {
         return todoRepository.findAll();
     }
 
-    public Todo updateTodo(Integer id,Todo todo) {
+    public Todo updateTodo(Integer id, Todo todo) {
         Todo existTodo = todoRepository.findById(id).orElse(null);
-        if(Objects.isNull(existTodo)){
+        if (Objects.isNull(existTodo)) {
             throw new ResourceNotFoundException(TODO_NOT_FOUND);
         }
         todo.setId(id);
@@ -35,7 +35,7 @@ public class TodoService {
         return todoRepository.save(todo);
     }
 
-    public Todo deleteTodo(Integer id){
+    public Todo deleteTodo(Integer id) {
         Todo existTodo = todoRepository.findById(id).orElse(null);
         todoRepository.deleteById(id);
         return existTodo;
