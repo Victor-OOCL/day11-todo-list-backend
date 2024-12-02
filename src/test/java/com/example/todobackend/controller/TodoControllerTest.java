@@ -15,6 +15,7 @@ import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
@@ -22,6 +23,7 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
 @AutoConfigureJsonTesters
@@ -74,7 +76,7 @@ public class TodoControllerTest {
                         MockMvcRequestBuilders.post("/todos")
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(requestBody))
-                .andExpect(MockMvcResultMatchers.status().isCreated())
+                .andExpect(status().isCreated())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.id").isNotEmpty())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.text").value("1234"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.done").value(false));
@@ -102,11 +104,28 @@ public class TodoControllerTest {
         client.perform(MockMvcRequestBuilders.put("/todos/" + idToUpdate)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(requestBody))
-                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.id").value(idToUpdate))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.text").value(textToUpdate))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.done").value(true));
+    }
+
+    @Test
+    void should_throw_error_when_update_given_not_exist_id() throws Exception {
+        // Given
+        var idToUpdate = todoRepository.findAll().get(2).getId()+1;
+        var textToUpdate = "1234";
+        String requestBody = String.format("{\"text\": \"%s\",\"done\":\"%b\" }", textToUpdate,true);
+        // When
+        // Then
+        client.perform(MockMvcRequestBuilders.put("/todos/" + idToUpdate)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(requestBody))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.errorCode").value("RESOURCE_NOT_FOUND"))  // 验证 errorCode
+                .andExpect(jsonPath("$.errorMessage").value("TODO NOT FOUND"));
+
     }
 
 }
