@@ -2,10 +2,7 @@ package com.example.todobackend.controller;
 
 import com.example.todobackend.model.Todo;
 import com.example.todobackend.service.TodoService;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -19,8 +16,22 @@ public class TodoController {
     }
 
     @GetMapping
-    @CrossOrigin(origins = "http://localhost:3000")
     public List<Todo> getAllTodo(){
         return todoService.findAll();
+    }
+
+    @PutMapping("{id}")
+    public Todo updateTodo(@PathVariable Integer id,@RequestBody Todo todo){
+        return todoService.updateTodo(id,todo);
+    }
+
+    @PostMapping
+    public Todo addTodo(@RequestBody Todo todo){
+        return todoService.addTodo(todo);
+    }
+
+    @DeleteMapping("{id}")
+    public Todo deleteTodo(@PathVariable Integer id){
+        return todoService.deleteTodo(id);
     }
 }
