@@ -16,6 +16,7 @@ import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import java.util.List;
 
@@ -59,6 +60,23 @@ public class TodoControllerTest {
                                 .build()
                 )
                 .isEqualTo(givenTodos);
+    }
+
+    @Test
+    void should_return_todos_when_add_todo_given_todos() throws Exception {
+        //Given
+        List<Todo> givenTodos = todoRepository.findAll();
+        String requestBody = String.format("{\"text\": \"1234\",\"done\": \"false\" }");
+        //When
+        //Then
+        client.perform(
+                        MockMvcRequestBuilders.post("/todos")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(requestBody))
+                .andExpect(MockMvcResultMatchers.status().isCreated())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.id").isNotEmpty())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.text").value("1234"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.done").value(false));
     }
 
 }

@@ -2,6 +2,7 @@ package com.example.todobackend.controller;
 
 import com.example.todobackend.model.Todo;
 import com.example.todobackend.service.TodoService;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -26,6 +27,7 @@ public class TodoController {
     }
 
     @PostMapping
+    @ResponseStatus(code = HttpStatus.CREATED)
     public Todo addTodo(@RequestBody Todo todo){
         return todoService.addTodo(todo);
     }
