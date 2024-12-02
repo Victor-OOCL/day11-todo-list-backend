@@ -21,6 +21,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 
 @SpringBootTest
 @AutoConfigureJsonTesters
@@ -66,7 +67,7 @@ public class TodoControllerTest {
     void should_return_todos_when_add_todo_given_todos() throws Exception {
         //Given
         List<Todo> givenTodos = todoRepository.findAll();
-        String requestBody = String.format("{\"text\": \"1234\",\"done\": \"false\" }");
+        String requestBody = "{\"text\": \"1234\",\"done\": \"false\" }";
         //When
         //Then
         client.perform(
@@ -88,6 +89,24 @@ public class TodoControllerTest {
         // Then
         assertThat(todoRepository.findAll()).hasSize(2);
         assertThat(todoRepository.findAll()).doesNotContain(deleteTodo);
+    }
+
+    @Test
+    void should_return_updated_todo_when_update_with_id_and_data() throws Exception {
+        // Given
+        var idToUpdate = todoRepository.findAll().get(0).getId();
+        var textToUpdate = "1234";
+        String requestBody = String.format("{\"text\": \"%s\",\"done\":\"%b\" }", textToUpdate,true);
+        // When
+        // Then
+        client.perform(MockMvcRequestBuilders.put("/todos/" + idToUpdate)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(requestBody))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.id").value(idToUpdate))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.text").value(textToUpdate))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.done").value(true));
     }
 
 }
